@@ -1,7 +1,7 @@
 {
-  "name": "vite-template-solid",
+  "name": "scrambled",
   "version": "0.0.0",
-  "description": "",
+  "description": "Time scrambles!",
   "scripts": {
     "start": "vite",
     "dev": "vite",

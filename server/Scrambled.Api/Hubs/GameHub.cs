@@ -6,7 +6,7 @@ namespace Scrambled.Api.Hubs
 	{
 		public async Task Send(string message)
 		{
-			await Clients.All.SendAsync("ReceiveMessage", message);
+			await Clients.All.SendAsync("ReceiveMessage", message + " received.");
 		}
 	}
 }
