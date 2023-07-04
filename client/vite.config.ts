@@ -1,15 +1,20 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import tsconfigPaths from 'vite-tsconfig-paths'
+import { defineConfig } from 'vite';
+import solidPlugin from 'vite-plugin-solid';
+// import devtools from 'solid-devtools/vite';
 
-// https://vitejs.dev/config https://vitest.dev/config
 export default defineConfig({
-  server: { port: 3000 },
-  plugins: [react(), tsconfigPaths()],
-  test: {
-    globals: true,
-    environment: 'happy-dom',
-    setupFiles: '.vitest/setup',
-    include: ['**/test.{ts,tsx}']
-  }
-})
+  plugins: [
+    /* 
+    Uncomment the following line to enable solid-devtools.
+    For more info see https://github.com/thetarnav/solid-devtools/tree/main/packages/extension#readme
+    */
+    // devtools(),
+    solidPlugin(),
+  ],
+  server: {
+    port: 3000,
+  },
+  build: {
+    target: 'esnext',
+  },
+});

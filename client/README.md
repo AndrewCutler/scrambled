@@ -1,80 +1,34 @@
-![reactjs-vite-tailwindcss-boilerplate](https://user-images.githubusercontent.com/16243531/217138979-b854309c-4742-4275-a705-f9fec5158217.jpg)
+## Usage
 
-# React Tailwindcss Boilerplate build with Vite
+Those templates dependencies are maintained via [pnpm](https://pnpm.io) via `pnpm up -Lri`.
 
-This is a boilerplate build with Vite, React 18, TypeScript, Vitest, Testing Library, TailwindCSS 3, Eslint and Prettier.
-
-## What is inside?
-
-This project uses many tools like:
-
-- [Vite](https://vitejs.dev)
-- [ReactJS](https://reactjs.org)
-- [TypeScript](https://www.typescriptlang.org)
-- [Vitest](https://vitest.dev)
-- [Testing Library](https://testing-library.com)
-- [Tailwindcss](https://tailwindcss.com)
-- [Eslint](https://eslint.org)
-- [Prettier](https://prettier.io)
-
-## Getting Started
-
-### Install
-
-Create the project.
+This is the reason you see a `pnpm-lock.yaml`. That being said, any package manager will work. This file can be safely be removed once you clone a template.
 
 ```bash
-npx degit joaopaulomoraes/reactjs-vite-tailwindcss-boilerplate my-app
+$ npm install # or pnpm install or yarn install
 ```
 
-Access the project directory.
+### Learn more on the [Solid Website](https://solidjs.com) and come chat with us on our [Discord](https://discord.com/invite/solidjs)
 
-```bash
-cd my-app
-```
+## Available Scripts
 
-Install dependencies.
+In the project directory, you can run:
 
-```bash
-pnpm install
-```
+### `npm run dev` or `npm start`
 
-Serve with hot reload at <http://localhost:5173>.
+Runs the app in the development mode.<br>
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-```bash
-pnpm run dev
-```
+The page will reload if you make edits.<br>
 
-### Lint
+### `npm run build`
 
-```bash
-pnpm run lint
-```
+Builds the app for production to the `dist` folder.<br>
+It correctly bundles Solid in production mode and optimizes the build for the best performance.
 
-### Typecheck
+The build is minified and the filenames include the hashes.<br>
+Your app is ready to be deployed!
 
-```bash
-pnpm run typecheck
-```
+## Deployment
 
-### Build
-
-```bash
-pnpm run build
-```
-
-### Test
-
-```bash
-pnpm run test
-```
-
-View and interact with your tests via UI.
-
-```bash
-pnpm run test:ui
-```
-
-## License
-
-This project is licensed under the MIT License.
+You can deploy the `dist` folder to any static host provider (netlify, surge, now, etc.)
