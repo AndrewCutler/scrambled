@@ -1,6 +1,6 @@
 import { Component, onMount } from 'solid-js';
 
-import { Chess } from 'chessjs';
+import { Chess } from 'chess.js';
 import { Chessground } from 'chessground';
 
 const Board: Component<{}> = (props) => {
