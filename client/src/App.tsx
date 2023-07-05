@@ -6,7 +6,7 @@ import styles from './App.module.css';
 const App: Component = () => {
 	return (
 		<div class={styles.App}>
-			<SignalTest />
+			{/* <SignalTest /> */}
 			<Board />
 		</div>
 	);

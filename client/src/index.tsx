@@ -1,8 +1,11 @@
+import './index.css';
+import './css/chessground.base.css'
+import './css/chessground.brown.css'
+import './css/chessground.cburnett.css'
+
+import App from './App';
 /* @refresh reload */
 import { render } from 'solid-js/web';
-
-import './index.css';
-import App from './App';
 
 const root = document.getElementById('root');
 
