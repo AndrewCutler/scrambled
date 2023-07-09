@@ -1,19 +1,9 @@
 import { Component, createEffect, createSignal, onMount } from 'solid-js';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 
-const SignalTest: Component<{}> = (props) => {
+const Lobby: Component<{}> = (props) => {
 	const [connection, setConnection] = createSignal<HubConnection>();
 
-	onMount(() => {
-		const connection = new HubConnectionBuilder()
-			.withUrl('http://localhost:5219/game')
-			.withAutomaticReconnect()
-			.build();
-
-		setConnection(connection);
-	});
-
-	// connection().
 	createEffect(() => {
 		if (connection()) {
 			connection()
@@ -29,18 +19,32 @@ const SignalTest: Component<{}> = (props) => {
 		}
 	});
 
-	const handleChange = async ({ target: { value } }: any): Promise<void> => {
-		// console.log({ value });
+	const joinGame = (): void => {
+		const connection = new HubConnectionBuilder()
+			.withUrl('http://localhost:5219/game')
+			.withAutomaticReconnect()
+			.build();
+
+		setConnection(connection);
+	};
+
+	const sendMove = async (): Promise<void> => {
 		if (connection()) {
-			await connection()?.send('Send', value);
+			await connection()?.send('Send', 'join game!');
 		}
 	};
 
 	return (
 		<div>
-			<input type='text' onInput={handleChange} />
+			{!connection() ? (
+				<button type='button' onClick={joinGame}>
+					Join game
+				</button>
+			) : (
+				<div>Game in progress...</div>
+			)}
 		</div>
 	);
 };
 
-export default SignalTest;
+export default Lobby;
