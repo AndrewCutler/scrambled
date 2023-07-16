@@ -1,36 +1,81 @@
 public interface IGameService
 {
-    Task<Guid> CreateGame(string gameId);
-    Task<Guid> GetGameIdFromConnectionId(string gameId);
+    /// <summary>
+    /// If no games are pending, creates a new one; otherwise joins a game in the queue.
+    /// </summary>
+    /// <param name="connectionId">The user's connection ID.</param>
+    /// <returns>The game ID.</returns>
+    Task<Guid> CreateOrJoinGame(string connectionId);
+
+    /// <summary>
+    /// Gets a game by its ID.
+    /// </summary>
+    /// <param name="gameId">The game ID.</param>
+    /// <returns>The game.</returns>
+    Task<Game> GetGameByGameId(string gameId);
+    // Task<Guid> GetGameIdFromConnectionId(string gameId);
 }
 
 public class GameService : IGameService
 {
     private readonly Dictionary<Guid, Game> games;
+    private readonly Queue<Guid> pendingGameIds;
 
     public GameService()
     {
         this.games = new Dictionary<Guid, Game>();
+        this.pendingGameIds = new Queue<Guid>();
     }
 
-    public Task<Guid> CreateGame(string connectionId)
+    /// </ inheritdoc>
+    public Task<Guid> CreateOrJoinGame(string connectionId)
     {
-        var id = Guid.NewGuid();
-        this.games.Add(id, new Game { ConnectionId = connectionId, });
+        var gameId = this.pendingGameIds.FirstOrDefault();
 
-        return Task.FromResult(id);
-    }
-
-    public Task<Guid> GetGameIdFromConnectionId(string connectionId)
-    {
-        // todo: use a better data structure.
-        var game = this.games.FirstOrDefault(g => g.Value.ConnectionId == connectionId);
-
-        if (game.Key == Guid.Empty)
+        if (gameId == default)
         {
-            throw new Exception("Invalid connection ID.");
+            gameId = Guid.NewGuid();
+            var game = new Game(gameId).AssignColor(connectionId);
+            this.games.Add(gameId, game);
+        }
+        else
+        {
+            var game = this.GetGameByGameId(gameId);
+            this.pendingGameIds.Dequeue();
         }
 
-        return Task.FromResult(game.Key);
+        return Task.FromResult(gameId);
     }
+
+    /// </ inheritdoc>
+    public Task<Game> GetGameByGameId(string gameId)
+    {
+        var game = this.GetGameByGameId(gameId);
+
+        return game;
+    }
+
+    private Game GetGameByGameId(Guid gameId)
+    {
+        if (this.games.TryGetValue(gameId, out var game))
+        {
+            return game;
+        }
+
+        throw new Exception($"Game not found with gameId {gameId}.");
+    }
+
+    // public Task<Guid> GetGameIdFromConnectionId(string connectionId)
+    // {
+    //     // todo: use a better data structure.
+    //     var game = this.games.FirstOrDefault(connectionId);
+    //     // if
+
+    //     if (game is null)
+    //     {
+    //         throw new Exception("Invalid game ID.");
+    //     }
+
+    //     return Task.FromResult(game);
+    // }
 }

@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace Scrambled.Api.Hubs
 {
+    // TODO: type
+    // https://learn.microsoft.com/en-us/aspnet/core/signalr/hubs?view=aspnetcore-7.0#strongly-typed-hubs
     public class GameHub : Hub
     {
         private readonly IGameService gameService;
@@ -11,35 +13,34 @@ namespace Scrambled.Api.Hubs
             this.gameService = gameService;
         }
 
+        // Create or join game
         public override async Task OnConnectedAsync()
         {
-            var gameId = await this.gameService.CreateGame(this.Context.ConnectionId);
+            // Get the id of a game
+            var gameId = await this.gameService.CreateOrJoinGame(this.Context.ConnectionId);
 
-            await this.Groups.AddToGroupAsync(this.Context.ConnectionId, gameId.ToString());
+            // Add id to group for that game
+            await this.Groups.AddToGroupAsync(
+                connectionId: this.Context.ConnectionId,
+                groupName: gameId.ToString()
+            );
 
-            await Clients.Caller.SendAsync("OnConnected", gameId.ToString(), DateTime.UtcNow);
+            // Send client gameId
+            await Clients.Caller.SendAsync("OnConnected", gameId);
 
             await base.OnConnectedAsync();
         }
 
-        public async Task Send(string message)
+        // Make a move, resign, lost on time, etc.
+        public async Task OnAction(string gameId, string action)
         {
-            var gameId = await this.gameService.GetGameIdFromConnectionId(Context.ConnectionId);
-
-            var msg = new
-            {
-                // SenderName = name,
-                Text = message,
-                SentAt = DateTimeOffset.UtcNow
-            };
+            var game = this.gameService.GetGameByGameId(gameId);
 
             // Broadcast to all clients
             await Clients
                 .Group(gameId.ToString())
                 .SendAsync(
-                    "ReceiveMessage",
-                    msg.Text,
-                    msg.SentAt /*, message.SenderName */
+                    "OnAction" /*, msg.Text, msg.SentAt, msg.SenderName*/
                 );
         }
     }

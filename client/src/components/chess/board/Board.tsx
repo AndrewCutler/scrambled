@@ -1,5 +1,11 @@
 import { Chess, Move } from 'chess.js';
-import { Component, createSignal, onCleanup, onMount } from 'solid-js';
+import {
+	Component,
+	createEffect,
+	createSignal,
+	onCleanup,
+	onMount
+} from 'solid-js';
 import { Key, MoveMetadata } from 'chessground/types';
 
 import { Api } from 'chessground/api';
@@ -9,7 +15,7 @@ const startingFen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 const fen =
 	'rnb1k1r1/1p1p4/2p1p3/4Pn1p/p2P1P2/2P2N1q/PP1QB1p1/R3K1R1 b q - 11 23';
 
-const Board: Component<{}> = (props) => {
+const Board: Component<{ isGameSet: boolean }> = (props) => {
 	const [cgApi, setCgApi] = createSignal<Api | undefined>(undefined);
 	const [board, setBoard] = createSignal<Chess | undefined>(undefined);
 
@@ -21,15 +27,25 @@ const Board: Component<{}> = (props) => {
 		cgApi()?.destroy();
 	});
 
+	createEffect(() => {
+		cgApi()?.set({
+			movable: {
+				free: props.isGameSet
+			}
+		});
+	});
+
 	const handleMove = (from: Key, to: Key, meta: MoveMetadata): void => {
-		try {
-			board()?.move({ from, to });
-			cgApi()?.move(from, to);
-		} catch (e) {
-			cgApi()?.set({
-				fen: board()?.fen()
-			});
-			console.error(e);
+		if (props.isGameSet) {
+			try {
+				const move = board()?.move({ from, to });
+				cgApi()?.move(from, to);
+			} catch (e) {
+				cgApi()?.set({
+					fen: board()?.fen()
+				});
+				console.error(e);
+			}
 		}
 	};
 
@@ -38,7 +54,7 @@ const Board: Component<{}> = (props) => {
 			Chessground(el, {
 				animation: { enabled: true, duration: 250 },
 				movable: {
-					free: true,
+					free: false, // make true when game is joined
 					color: 'both',
 					events: {
 						after: handleMove

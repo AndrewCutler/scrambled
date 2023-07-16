@@ -1,7 +1,9 @@
 import { Component, createEffect, createSignal, onMount } from 'solid-js';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 
-const Lobby: Component<{}> = (props) => {
+const Lobby: Component<{
+	onGameSet: (id: string) => void;
+}> = ({ onGameSet }) => {
 	const [connection, setConnection] = createSignal<HubConnection>();
 
 	createEffect(() => {
@@ -11,33 +13,41 @@ const Lobby: Component<{}> = (props) => {
 				.then((result) => {
 					console.log({ result });
 
-					connection()?.on('ReceiveMessage', (message) => {
-						console.log({ message });
+					connection()?.on('OnAction', (message) => {
+						console.log({ onAction: message });
+					});
+					connection()?.on('OnConnected', (gameId) => {
+						console.log({ onConnected: gameId });
+						onGameSet(gameId);
 					});
 				})
 				.catch(console.error);
 		}
 	});
 
-	const joinGame = (): void => {
-		const connection = new HubConnectionBuilder()
-			.withUrl('http://localhost:5219/game')
-			.withAutomaticReconnect()
-			.build();
+	function onJoin(): void {
+		if (!connection()) {
+			const _connection = new HubConnectionBuilder()
+				.withUrl('http://localhost:5219/game')
+				.withAutomaticReconnect()
+				.build();
 
-		setConnection(connection);
-	};
-
-	const sendMove = async (): Promise<void> => {
-		if (connection()) {
-			await connection()?.send('Send', 'join game!');
+			setConnection(_connection);
 		}
-	};
+	}
+
+	// change to onAction
+	async function onAction(): Promise<void> {
+		if (connection()) {
+			console.log('Joining...');
+			await connection()?.send('Join', 'join game!');
+		}
+	}
 
 	return (
 		<div>
 			{!connection() ? (
-				<button type='button' onClick={joinGame}>
+				<button type='button' onClick={onJoin}>
 					Join game
 				</button>
 			) : (
