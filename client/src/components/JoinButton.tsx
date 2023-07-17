@@ -1,7 +1,7 @@
 import { Component, createEffect, createSignal, onMount } from 'solid-js';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 
-const Game: Component<{
+const JoinButton: Component<{
 	onJoin: () => void;
 	isGameSet: boolean;
 }> = (props) => (
@@ -16,4 +16,4 @@ const Game: Component<{
 	</div>
 );
 
-export default Game;
+export default JoinButton;

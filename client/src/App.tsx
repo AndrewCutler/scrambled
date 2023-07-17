@@ -1,11 +1,11 @@
-import Board from './components/chess/board/Board';
+import Board from './components/Board';
 import {
 	createSignal,
 	type Component,
 	createMemo,
 	createEffect
 } from 'solid-js';
-import Game from './components/app/Game';
+import JoinButton from './components/JoinButton';
 import styles from './App.module.css';
 import { Fen } from './utils/Fen';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
@@ -59,7 +59,7 @@ const App: Component = () => {
 
 	return (
 		<div class={styles.App}>
-			<Game onJoin={handleJoin} isGameSet={isGameSet()} />
+			<JoinButton onJoin={handleJoin} isGameSet={isGameSet()} />
 			<Board
 				isGameSet={isGameSet()}
 				onPositionChange={handlePositionChange}
