@@ -13,7 +13,6 @@ public interface IGameService
     /// <param name="gameId">The game ID.</param>
     /// <returns>The game.</returns>
     Task<Game> GetGameByGameId(string gameId);
-    // Task<Guid> GetGameIdFromConnectionId(string gameId);
 }
 
 public class GameService : IGameService
@@ -37,10 +36,11 @@ public class GameService : IGameService
             gameId = Guid.NewGuid();
             var game = new Game(gameId).AssignColor(connectionId);
             this.games.Add(gameId, game);
+			this.pendingGameIds.Enqueue(gameId);
         }
         else
         {
-            var game = this.GetGameByGameId(gameId);
+            var game = this.GetGameByGameId(gameId).AssignColor(connectionId);
             this.pendingGameIds.Dequeue();
         }
 
@@ -64,18 +64,4 @@ public class GameService : IGameService
 
         throw new Exception($"Game not found with gameId {gameId}.");
     }
-
-    // public Task<Guid> GetGameIdFromConnectionId(string connectionId)
-    // {
-    //     // todo: use a better data structure.
-    //     var game = this.games.FirstOrDefault(connectionId);
-    //     // if
-
-    //     if (game is null)
-    //     {
-    //         throw new Exception("Invalid game ID.");
-    //     }
-
-    //     return Task.FromResult(game);
-    // }
 }

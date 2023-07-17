@@ -15,7 +15,10 @@ const startingFen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 const fen =
 	'rnb1k1r1/1p1p4/2p1p3/4Pn1p/p2P1P2/2P2N1q/PP1QB1p1/R3K1R1 b q - 11 23';
 
-const Board: Component<{ isGameSet: boolean }> = (props) => {
+const Board: Component<{
+	isGameSet: boolean;
+	onPositionChange: (fen: string) => void;
+}> = (props) => {
 	const [cgApi, setCgApi] = createSignal<Api | undefined>(undefined);
 	const [board, setBoard] = createSignal<Chess | undefined>(undefined);
 
@@ -35,11 +38,18 @@ const Board: Component<{ isGameSet: boolean }> = (props) => {
 		});
 	});
 
+	// why doesn't this work?
+	// createEffect(() => {
+	// 	const position = board()?.fen();
+	// 	console.log({ position });
+	// });
+
 	const handleMove = (from: Key, to: Key, meta: MoveMetadata): void => {
 		if (props.isGameSet) {
 			try {
 				const move = board()?.move({ from, to });
 				cgApi()?.move(from, to);
+				props.onPositionChange(board()?.fen() ?? '');
 			} catch (e) {
 				cgApi()?.set({
 					fen: board()?.fen()

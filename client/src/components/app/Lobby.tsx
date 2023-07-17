@@ -36,7 +36,6 @@ const Lobby: Component<{
 		}
 	}
 
-	// change to onAction
 	async function onAction(): Promise<void> {
 		if (connection()) {
 			console.log('Joining...');
