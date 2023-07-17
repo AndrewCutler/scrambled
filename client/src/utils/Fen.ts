@@ -24,7 +24,7 @@ export class Fen {
 
 		this.#placement = placement;
 		this.#activeColor = activeColor === 'b' ? 'black' : 'white';
-		this.#enPassant = '';
+		this.#enPassant = ''; // todo
 		this.#halfMove = parseInt(halfMove, 10);
 		this.#fullMove = parseInt(fullMove, 10);
 		this.assignCastling(castling);
@@ -59,5 +59,9 @@ export class Fen {
 
 	get fen(): string {
 		return this.#fen;
+	}
+
+	get activeColor(): string {
+		return this.#activeColor;
 	}
 }

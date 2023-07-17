@@ -1,25 +1,67 @@
 import Board from './components/chess/board/Board';
-import { createSignal, type Component } from 'solid-js';
-import Lobby from './components/app/Lobby';
+import {
+	createSignal,
+	type Component,
+	createMemo,
+	createEffect
+} from 'solid-js';
+import Game from './components/app/Game';
 import styles from './App.module.css';
 import { Fen } from './utils/Fen';
+import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 
 const App: Component = () => {
 	const [gameId, setGameId] = createSignal<string>();
+	const [connection, setConnection] = createSignal<HubConnection>();
 
-	function handleGameSet(id: string): void {
-		setGameId(id);
+	createEffect(() => {
+		if (connection()) {
+			connection()
+				?.start()
+				.then((result) => {
+					console.log({ result });
+
+					connection()?.on('OnAction', (message) => {
+						console.log({ onAction: message });
+					});
+					connection()?.on('OnConnected', (gameId) => {
+						console.log({ onConnected: gameId });
+						setGameId(gameId);
+					});
+				})
+				.catch(console.error);
+		}
+	});
+
+	function handleJoin(): void {
+		if (!connection()) {
+			const _connection = new HubConnectionBuilder()
+				.withUrl('http://localhost:5219/game')
+				.withAutomaticReconnect()
+				.build();
+
+			setConnection(_connection);
+		}
+	}
+
+	async function onAction(): Promise<void> {
+		if (connection()) {
+			console.log('Joining...');
+			await connection()?.send('Join', 'join game!');
+		}
 	}
 
 	function handlePositionChange(fen: string): void {
 		console.log({ fen: new Fen(fen) });
 	}
 
+	const isGameSet = createMemo(() => !!gameId()?.trim());
+
 	return (
 		<div class={styles.App}>
-			<Lobby onGameSet={handleGameSet} />
+			<Game onJoin={handleJoin} isGameSet={isGameSet()} />
 			<Board
-				isGameSet={!!gameId()?.trim()}
+				isGameSet={isGameSet()}
 				onPositionChange={handlePositionChange}
 			/>
 		</div>
