@@ -44,7 +44,11 @@ const App: Component = () => {
 
 	async function handleAction(fen: string): Promise<void> {
 		if (connection()) {
-			await connection()?.invoke('OnActionAsync', gameId, fen);
+			try {
+				await connection()?.invoke('OnActionAsync', gameId, fen);
+			} catch (e) {
+				console.error(e);
+			}
 		}
 	}
 
@@ -54,7 +58,7 @@ const App: Component = () => {
 	}
 
 	const isGameSet = () => !!gameId()?.trim();
-	
+
 	return (
 		<div class={styles.App}>
 			<JoinButton onJoin={handleJoin} isGameSet={isGameSet()} />
