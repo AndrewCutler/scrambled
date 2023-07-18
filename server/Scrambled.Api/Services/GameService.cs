@@ -12,7 +12,7 @@ public interface IGameService
     /// </summary>
     /// <param name="gameId">The game ID.</param>
     /// <returns>The game.</returns>
-    Task<Game> GetGameByGameId(string gameId);
+    Game GetGameByGameId(Guid gameId);
 }
 
 public class GameService : IGameService
@@ -48,14 +48,14 @@ public class GameService : IGameService
     }
 
     /// </ inheritdoc>
-    public Task<Game> GetGameByGameId(string gameId)
+    public Game GetGameByGameId(Guid gameId)
     {
-        var game = this.GetGameByGameId(gameId);
+        var game = this.TryGetGameByGameId(gameId);
 
         return game;
     }
 
-    private Game GetGameByGameId(Guid gameId)
+    private Game TryGetGameByGameId(Guid gameId)
     {
         if (this.games.TryGetValue(gameId, out var game))
         {

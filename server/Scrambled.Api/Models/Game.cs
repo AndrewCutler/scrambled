@@ -13,6 +13,9 @@ public class Game
     /// Gets or sets the connectionId for the black player.
     public string? Black { get; set; }
 
+    /// <summary>
+    /// Gets or sets the fen of the current game state.
+    /// </summary>
     public string Fen { get; set; } = string.Empty;
 
     public Game() { }
@@ -22,6 +25,11 @@ public class Game
         this.GameId = gameId;
     }
 
+    /// <summary>
+    /// Assigns the given player a color for the current game.
+    /// </summary>
+    /// <param name="connectionId"></param>
+    /// <returns></returns>
     public Game AssignColor(string connectionId)
     {
         if (this.White is null && this.Black is null)

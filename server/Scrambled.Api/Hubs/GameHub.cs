@@ -33,7 +33,7 @@ namespace Scrambled.Api.Hubs
         }
 
         // Make a move, resign, lost on time, etc.
-        public async Task OnActionAsync(string gameId, string action)
+        public async Task OnActionAsync(Guid gameId, string action)
         {
             var game = this.gameService.GetGameByGameId(gameId);
             Console.WriteLine($"Action: {action}");

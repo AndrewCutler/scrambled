@@ -22,7 +22,7 @@ const App: Component = () => {
 					});
 					connection()?.on(
 						'OnActionAsync',
-						(gameId: String, action: String) => {
+						(gameId: string, action: string) => {
 							console.log({ onActionAsync: { gameId, action } });
 						}
 					);
@@ -45,7 +45,7 @@ const App: Component = () => {
 	async function handleAction(fen: string): Promise<void> {
 		if (connection()) {
 			try {
-				await connection()?.invoke('OnActionAsync', gameId, fen);
+				await connection()?.invoke('OnActionAsync', gameId(), fen);
 			} catch (e) {
 				console.error(e);
 			}
@@ -53,7 +53,6 @@ const App: Component = () => {
 	}
 
 	async function handlePositionChange(fen: string): Promise<void> {
-		console.log({ fen: new Fen(fen) });
 		await handleAction(fen);
 	}
 
