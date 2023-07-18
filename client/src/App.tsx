@@ -24,6 +24,7 @@ const App: Component = () => {
 						'OnActionAsync',
 						(gameId: string, action: string) => {
 							console.log({ onActionAsync: { gameId, action } });
+							// todo: set position to action, if result is new fen
 						}
 					);
 				})

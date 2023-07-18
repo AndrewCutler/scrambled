@@ -29,14 +29,12 @@ namespace Scrambled.Api.Hubs
             await Clients.Caller.SendAsync("GameJoined", gameId);
 
             await base.OnConnectedAsync();
-            Console.WriteLine("JOINED");
         }
 
         // Make a move, resign, lost on time, etc.
         public async Task OnActionAsync(Guid gameId, string action)
         {
             var game = this.gameService.GetGameByGameId(gameId);
-            Console.WriteLine($"Action: {action}");
 
             // Broadcast to all clients
             await Clients.Group(gameId.ToString()).SendAsync("OnActionAsync", gameId, action);
