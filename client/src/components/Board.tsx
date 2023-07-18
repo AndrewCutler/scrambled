@@ -3,6 +3,7 @@ import {
 	Component,
 	createEffect,
 	createSignal,
+	on,
 	onCleanup,
 	onMount
 } from 'solid-js';
@@ -30,13 +31,19 @@ const Board: Component<{
 		cgApi()?.destroy();
 	});
 
-	createEffect(() => {
-		cgApi()?.set({
-			movable: {
-				free: props.isGameSet
+	createEffect(
+		on(
+			() => props.isGameSet,
+			() => {
+				console.log({ isGameSet: props.isGameSet });
+				cgApi()?.set({
+					movable: {
+						free: props.isGameSet
+					}
+				});
 			}
-		});
-	});
+		)
+	);
 
 	// why doesn't this work?
 	// createEffect(() => {
@@ -48,6 +55,7 @@ const Board: Component<{
 		if (props.isGameSet) {
 			try {
 				const move = board()?.move({ from, to });
+				console.log({ move });
 				cgApi()?.move(from, to);
 				props.onPositionChange(board()?.fen() ?? '');
 			} catch (e) {

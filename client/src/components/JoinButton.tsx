@@ -6,7 +6,7 @@ const JoinButton: Component<{
 	isGameSet: boolean;
 }> = (props) => (
 	<div>
-		{props.isGameSet ? (
+		{!props.isGameSet ? (
 			<button type='button' onClick={props.onJoin}>
 				Join game
 			</button>

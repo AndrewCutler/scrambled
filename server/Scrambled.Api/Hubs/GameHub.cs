@@ -26,22 +26,20 @@ namespace Scrambled.Api.Hubs
             );
 
             // Send client gameId
-            await Clients.Caller.SendAsync("OnConnected", gameId);
+            await Clients.Caller.SendAsync("GameJoined", gameId);
 
             await base.OnConnectedAsync();
+            Console.WriteLine("JOINED");
         }
 
         // Make a move, resign, lost on time, etc.
-        public async Task OnAction(string gameId, string action)
+        public async Task OnActionAsync(string gameId, string action)
         {
             var game = this.gameService.GetGameByGameId(gameId);
+            Console.WriteLine($"Action: {action}");
 
             // Broadcast to all clients
-            await Clients
-                .Group(gameId.ToString())
-                .SendAsync(
-                    "OnAction" /*, msg.Text, msg.SentAt, msg.SenderName*/
-                );
+            await Clients.Group(gameId.ToString()).SendAsync("OnActionAsync", gameId, action);
         }
     }
 }
